@@ -1,0 +1,10 @@
+title = "Investec Swag Portal secret scanning"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "The committed environment template contains documented non-secret placeholders only."
+paths = [
+  '''(^|/)\.env\.example$'''
+]
