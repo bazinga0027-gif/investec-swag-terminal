@@ -111,7 +111,7 @@ jobs:
           docker run --rm \
             -v "$GITHUB_WORKSPACE:/repo:ro" \
             -v "$canary_dir:/canary:ro" \
-            ghcr.io/gitleaks/gitleaks:v8.29.1@sha256:aa036a2f4bdfe3cc3c55fa432630ce4e4b08a7f1192b5b6c6a7d2f5a4b1f3d6 \
+            ghcr.io/gitleaks/gitleaks:v8.29.1@sha256:aa036a2f4bdfe3cc3c55fa432630ce4e4b08a7f119122045e176ca9d44ff00b08b \
             dir --config /repo/.gitleaks.toml --redact --no-banner /canary
           status=$?
 
@@ -133,5 +133,5 @@ jobs:
         run: |
           docker run --rm \
             -v "$GITHUB_WORKSPACE:/repo:ro" \
-            ghcr.io/gitleaks/gitleaks:v8.29.1@sha256:aa036a2f4bdfe3cc3c55fa432630ce4e4b08a7f1192b5b6c6a7d2f5a4b1f3d6 \
+            ghcr.io/gitleaks/gitleaks:v8.29.1@sha256:aa036a2f4bdfe3cc3c55fa432630ce4e4b08a7f119122045e176ca9d44ff00b08b \
             git --config /repo/.gitleaks.toml --redact --no-banner /repo
