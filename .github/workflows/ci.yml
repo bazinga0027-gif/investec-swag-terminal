@@ -106,7 +106,7 @@ jobs:
           set +e
           canary_dir="${RUNNER_TEMP}/gitleaks-canary"
           mkdir -p "$canary_dir"
-          printf '%s\n' 'token = "ghp_aBcDeFgHiJkLmNoPqRsTuVwXyZ0123456789"' > "$canary_dir/canary.txt"
+          printf '%s\n' 'token = "CI_CANARY_0123456789ABCDEF0123456789ABCDEF"' > "$canary_dir/canary.txt"
 
           docker run --rm \
             -v "$GITHUB_WORKSPACE:/repo:ro" \
