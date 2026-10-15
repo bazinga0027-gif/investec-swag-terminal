@@ -8,3 +8,11 @@ description = "The committed environment template contains documented non-secret
 paths = [
   '''(^|/)\.env\.example$'''
 ]
+
+# Deterministic synthetic marker used to prove the CI scanner is executing.
+# The canary exists only in the runner's temporary directory, never in the repo.
+[[rules]]
+id = "ci-secret-scan-canary"
+description = "CI secret-scanner canary"
+regex = '''CI_CANARY_[A-F0-9]{32}'''
+keywords = ["CI_CANARY_"]
