@@ -107,12 +107,23 @@ jobs:
           canary_dir="${RUNNER_TEMP}/gitleaks-canary"
           mkdir -p "$canary_dir"
           printf '%s\n' 'token = "CI_CANARY_0123456789ABCDEF0123456789ABCDEF"' > "$canary_dir/canary.txt"
+          canary_config="${RUNNER_TEMP}/gitleaks-canary.toml"
+          cat "$GITHUB_WORKSPACE/.gitleaks.toml" > "$canary_config"
+          cat >> "$canary_config" <<'GITLEAKS_CANARY_RULE'
+
+          [[rules]]
+          id = "ci-secret-scan-canary"
+          description = "CI-only synthetic canary"
+          regex = '''CI_CANARY_[A-F0-9]{32}'''
+          keywords = ["CI_CANARY_"]
+          GITLEAKS_CANARY_RULE
 
           docker run --rm \
             -v "$GITHUB_WORKSPACE:/repo:ro" \
             -v "$canary_dir:/canary:ro" \
+            -v "$canary_config:/canary.toml:ro" \
             ghcr.io/gitleaks/gitleaks:v8.29.1@sha256:aa036a2f4bdfe3cc3c55fa4326308efabb4a6be498c883c864fd1d0d5585438a \
-            dir --config /repo/.gitleaks.toml --exit-code 1 --redact --no-banner /canary
+            dir --config /canary.toml --exit-code 1 --redact --no-banner /canary
           status=$?
 
           rm -rf "$canary_dir"
