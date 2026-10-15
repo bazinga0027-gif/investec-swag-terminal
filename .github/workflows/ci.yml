@@ -141,8 +141,20 @@ jobs:
           echo 'Secret scanner canary was detected as expected.'
 
       - name: Scan repository history for secrets
+        shell: bash
         run: |
+          set +e
+          report="${RUNNER_TEMP}/gitleaks-report.json"
           docker run --rm \
             -v "$GITHUB_WORKSPACE:/repo:ro" \
+            -v "$RUNNER_TEMP:/reports" \
             ghcr.io/gitleaks/gitleaks:v8.29.1@sha256:aa036a2f4bdfe3cc3c55fa4326308efabb4a6be498c883c864fd1d0d5585438a \
-            git --config /repo/.gitleaks.toml --exit-code 1 --redact --no-banner /repo
+            git --config /repo/.gitleaks.toml --report-format json --report-path /reports/gitleaks-report.json --exit-code 1 --redact --no-banner /repo
+          status=$?
+          if [ -f "$report" ]; then
+            jq '[.[] | {RuleID, File, Commit, StartLine, EndLine, Fingerprint}]' "$report"
+          fi
+          if [ "$status" -ne 0 ]; then
+            echo "Secret scan failed with exit code $status; see redacted finding metadata above."
+            exit "$status"
+          fi
