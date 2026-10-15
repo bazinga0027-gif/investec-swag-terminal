@@ -10,7 +10,5 @@ paths = [
 ]
 
 [[allowlists]]
-description = "Synthetic CI canary markers are test fixtures, not credentials."
-regexes = [
-  '''CI_CANARY_[A-F0-9]{32}'''
-]
+description = "The historical CI canary commit introduced a synthetic test marker, not a credential."
+commits = ["d297586f8903b673cfd0dbca1415e031c212e8a5"]
