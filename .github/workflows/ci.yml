@@ -31,7 +31,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Run API tests
-        run: bun test
+        run: bun run test
 
   typecheck:
     name: Typecheck
@@ -49,7 +49,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Run TypeScript type checks
-        run: bun typecheck
+        run: bun run typecheck
 
   admin-build:
     name: Admin build
@@ -89,7 +89,7 @@ jobs:
         run: go test ./...
 
       - name: Build SSH server
-        run: go build -o bin/ssh-server ./cmd/ssh/main.go
+        run: go build -o /tmp/ssh-server ./cmd/ssh/main.go
 
   secret-scan:
     name: Secret scan
@@ -106,12 +106,12 @@ jobs:
           set +e
           canary_dir="${RUNNER_TEMP}/gitleaks-canary"
           mkdir -p "$canary_dir"
-          printf '%s\n' 'token = "ghp_aBcDeFgHiJkLmNoPqRsTuVwXyZ0123456789"' > "$canary_dir/canary.txt"
+          printf '%s\\n' 'token = "ghp_aBcDeFgHiJkLmNoPqRsTuVwXyZ0123456789"' > "$canary_dir/canary.txt"
 
-          docker run --rm \
-            -v "$GITHUB_WORKSPACE:/repo:ro" \
-            -v "$canary_dir:/canary:ro" \
-            ghcr.io/gitleaks/gitleaks:v8.29.1@sha256:aa036a2f4bdfe3cc3c55fa432630ce4e4b08a7f119122045e176ca9d44ff00b08b \
+          docker run --rm \\
+            -v "$GITHUB_WORKSPACE:/repo:ro" \\
+            -v "$canary_dir:/canary:ro" \\
+            ghcr.io/gitleaks/gitleaks:v8.29.1@sha256:aa036a2f4bdfe3cc3c55fa432630ce4e4b08a7f119122045e176ca9d44ff00b08b \\
             dir --config /repo/.gitleaks.toml --exit-code 1 --redact --no-banner /canary
           status=$?
 
@@ -131,7 +131,7 @@ jobs:
 
       - name: Scan repository history for secrets
         run: |
-          docker run --rm \
-            -v "$GITHUB_WORKSPACE:/repo:ro" \
-            ghcr.io/gitleaks/gitleaks:v8.29.1@sha256:aa036a2f4bdfe3cc3c55fa432630ce4e4b08a7f119122045e176ca9d44ff00b08b \
+          docker run --rm \\
+            -v "$GITHUB_WORKSPACE:/repo:ro" \\
+            ghcr.io/gitleaks/gitleaks:v8.29.1@sha256:aa036a2f4bdfe3cc3c55fa432630ce4e4b08a7f119122045e176ca9d44ff00b08b \\
             git --config /repo/.gitleaks.toml --exit-code 1 --redact --no-banner /repo
