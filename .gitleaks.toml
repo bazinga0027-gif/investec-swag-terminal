@@ -8,3 +8,9 @@ description = "The committed environment template contains documented non-secret
 paths = [
   '''(^|/)\.env\.example$'''
 ]
+
+[[allowlists]]
+description = "Synthetic CI canary markers are test fixtures, not credentials."
+regexes = [
+  '''CI_CANARY_[A-F0-9]{32}'''
+]
